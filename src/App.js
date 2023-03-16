@@ -1,9 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
+import './assets/css/App.css';
+import Search from './pages/home';
 
 function App() {
   return (
-    
+    <>
+    <Search />
+    </>
   );
 }
 

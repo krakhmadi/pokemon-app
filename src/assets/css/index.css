@@ -1,0 +1,21 @@
+.pokemon-search{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-container{
+  margin: 0;
+}
+
+.paragraph-form{
+  width: 100%;
+}
+
+.card-pokemon-image{
+  display: flex;
+  height: 240px;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+}
