@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 4rem;
 }
 .search-container{
   margin: 0;
@@ -10,7 +11,10 @@
 .paragraph-form{
   width: 100%;
 }
-
+.pokemon-image-placeholder{
+  display: flex;
+  justify-content: center;
+}
 .card-pokemon-image{
   display: flex;
   height: 240px;
@@ -18,4 +22,34 @@
   align-items: center;
   justify-content: center;
   border-radius: 5px;
+}
+
+.card-title{
+  display: flex;
+  align-items: start;
+}
+.card-pokemon-name{
+  text-transform: capitalize;
+  font-weight: bold;
+  font-size: 24px;
+}
+.pokemon-type{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 4px;
+  background-color: #5CB85F;
+  width: 100%;
+  border-radius: 4px;
+  border-style: none;
+  margin: 2px;
+  text-transform: uppercase;
+  color: white;
+}
+
+.anu{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }

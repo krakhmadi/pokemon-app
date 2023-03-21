@@ -7,6 +7,8 @@ import SelectBox from "../../components/Selectox";
 import Button from "../../components/Button";
 import { fetchApi } from '../../config/sevices';
 import gengar from '../../assets/img/gengar.jpeg'
+import Type from '../../components/Type';
+import axios from 'axios';
 
 const pokemonType = [{
     value: 'water',
@@ -21,45 +23,42 @@ const pokemonType = [{
 
 
 const Search = (props) => {
-    const [data, setData] = useState([])
-    const [value, setValue] = useState({
-        pokemonName: "",
-        kapasitas: "",
-        harga: "",
-        status: ""
-    })
-    const fetchingCar = useCallback((params = null) => {
-        // setloader('fetching')
-        fetchApi('https://pokeapi.co/api/v2/pokemon', params).then(result => {
-            setData(result.data.pokemon)
-            // setloader('resolve')
-        }).catch(e => {
-            // setloader('reject')
-        })
-    }, [])
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        fetchingCar({
-            name: value.carName,
-            catgory: value.kapasitas,
-            isRented: value.status,
-            minPrice: value.harga,
-            maxPrice: value.harga
-        })
-        // setBackDrop(false)
+    const [pokeData, setPokeData]=useState([]);
+    const [url, setUrl]=useState('https://pokeapi.co/api/v2/pokemon');
+    const [nextUrl, setNextUrl]=useState();
+    const [prevUrl, setPrevUrl]=useState();
+
+    const pokeSearch = async() => {
+        const res = await axios.get(url);
+        setNextUrl(res.data.next);
+        setPrevUrl(res.data.previous);
+        getPokeData(res.data.results)
     }
 
-    useEffect ( () => {
-        fetchingCar()
-    }, [fetchingCar])
+
+    const getPokeData=async(respon) => {
+        respon.map(async(pokemon) => {
+            const result=await axios.get(pokemon.url)
+            setPokeData(state=>{
+                state=[...state,result.data]
+                // state.sort ((a,b) => a.id - b.id)
+                return state;
+            })
+        })
+    }
+    const pokeDataAsc = [...pokeData].sort((a,b) => a.id-b.id);
+    console.log(pokeData)
     
+    useEffect(() => {
+        pokeSearch();
+    },[]) 
 
     return(
         <>
         <Segment className="pokemon-search">
             <Segment className="container search-container">
-                <Card onSubmit={handleSubmit}>
+                <Card>
                     <Row>
                         <Col md={5}>
                             <Input 
@@ -89,30 +88,44 @@ const Search = (props) => {
         </Segment>
         <Segment className='container mt-4'>
             <Row>
-                <Col md={4} className="pb-4">
-                    <Card className="d-flex flex-column">
-                        <Segment className="pokemon-image-placeholder px-4 py-3">
-                            <img className="card-pokemon-image" src={gengar} alt="pict-pokemon" />
-                        </Segment>
-                        <Segment className="content-card px-4 pb-4">
-                            <h6 className='card-pokemon-name'>Gengar</h6>
-                            <Row>
-                                <Col>
-                                    <p className='card-pokemon-type'>Ghost</p>
-                                </Col>
-                                <Col>
-                                    <p className='card-pokemon-type'>Poison</p>
-                                </Col>
-                            </Row>
-                            <p className='card-pokemon-description'>
-                                Lorem ipsum dolor card-car-imagesit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                            </p>
-                            <Button className='btn btn-success btn-form-item d-flex align-items-center justify-content-center'>
-                                Detail
-                            </Button>
-                        </Segment>
-                    </Card>
-                </Col>
+                {
+                    pokeDataAsc.map((pokemon) => {
+                        return (
+                            <Col md={4} className="pb-4">
+                                <Card className="d-flex flex-column">
+                                    <Segment className="pokemon-image-placeholder px-4 py-3">
+                                        <img className="card-pokemon-image" src={pokemon.sprites.front_default} alt="pict-pokemon" />
+                                    </Segment>
+                                    <Segment className='content-card px-4 pb-2'>
+                                        <Segment className='card-title'>
+                                            <h6 className='card-pokemon-name'>{pokemon.id}</h6>
+                                            <h6 className='card-pokemon-name'>. {pokemon.name}</h6>
+                                        </Segment>
+                                        <Row className='card-pokemon-type'>
+                                            <Col md={12}>
+                                                <Type className='anu'>
+                                                    {
+                                                        pokemon.types.map(pokemonType=>{
+                                                            return(
+                                                                <p className='pokemon-type'>{pokemonType.type.name}</p>
+                                                            )
+                                                        })
+                                                    }
+                                                </Type>
+                                            </Col>
+                                        </Row>
+                                        <p className='card-pokemon-description'>
+                                            Lorem ipsum dolor card-car-imagesit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                        </p>
+                                        <Button className='btn btn-success btn-form-item d-flex align-items-center justify-content-center'>
+                                            Detail
+                                        </Button>
+                                    </Segment>
+                                </Card>
+                            </Col>
+                        )
+                    })
+                }
             </Row>
         </Segment>
         </>
